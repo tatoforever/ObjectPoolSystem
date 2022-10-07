@@ -33,7 +33,7 @@ void Update()
 ```
 For example you want to instantiate a bunch of objects but you don't want to manually handle its deactivation. This call takes care of their deactivation time using the lifeTime you provided when created the pool.
 
-Once the object managing the pool instance is destroyed, call ObjectPoolSystem.Dispose(); like this:
+Once the object managing the pool instance is destroyed, call ```ObjectPoolSystem.Dispose();``` like this:
 
 ```poolSystemOfBloodParticles.Dispose();```
 That will de-allocate and destroy all instances created by the pool.
