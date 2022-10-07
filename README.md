@@ -39,5 +39,5 @@ Once the object managing the pool instance is destroyed, call ```ObjectPoolSyste
 That will de-allocate and destroy all instances created by the pool.
 
 ## Tips:
-With this sytem what i basically do is to create the pool of instances OnEnable (if not already done), and OnDisable i dispose it (if previously created).
-You can use this with anything that is a GameObject that needs tons of spawns. Make sure that any component attached to those instances handles their properies initialization/reset with OnEnable/OnDisable, like enemies that are de-activated will reset their states/enery/attributes/etc
+With this sytem what i basically do is to create the pool of instances OnEnable (only once), and OnDisable i dispose it (if previously created).
+You can use this system with anything that is a GameObject that needs tons of instantiations/destroy or if you want to avoid the activation hit (spike) after a GameObject is instantiated at runtime. Reseting instances properties is 100x faster than instantiating a new object, plus zero garbage collection. Make sure that any component attached to those instances handles their properies initialization/reset with OnEnable/OnDisable so when their instance get activated/deactivated it will automatically reset its state.
