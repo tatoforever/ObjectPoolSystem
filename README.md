@@ -22,7 +22,7 @@ This call replaces GameObject.Instantiate(); in your code.
 
 ```poolSystemOfBloodParticles.ReturnInstance(newInstance);```
 This call replaces GameObject.Destroy/DestroyImmediate(); in your code.
-###### Note: You only need to manually return an instance to the pool if you din't supplied a lifeTime when creating the pool. If you supplied a lifeTime, instances will return automatically to the pool after lifeTime has reached zero.
+###### Note: You only need to manually return an instance to the pool if you din't supplied a lifeTime when creating the pool. If you supplied a lifeTime, instances will return automatically to the pool after lifeTime has reached zero. If you are requesting more instances than max instances the system will return the oldest one.
 
 - To handle automatic lifecycle of instances, call every frame ObjectPoolSystem.Tick(); like this:
 ```
@@ -31,6 +31,8 @@ void Update()
   poolSystemOfBloodParticles.Tick();
 }
 ```
+For example you want to instantiate a bunch of objects but you don't want to manually handle its deactivation. This call takes care of their deactivation time using the lifeTime you provided when created the pool.
+
 Once the object managing the pool instance is destroyed, call ObjectPoolSystem.Dispose(); like this:
 
 ```poolSystemOfBloodParticles.Dispose();```
