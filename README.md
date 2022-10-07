@@ -13,18 +13,18 @@ Example:
 
 The pool is instantiated with a minimum set of instances, if you need more instances than the minimum set, it will resize the pool untill it reach max instances. Once the pool instance reaches max instances it will swap the oldest instance with the new instance when you request a new one. But if you never reach max instances, no new instance is created.
 
-- To follow the example above. To get a new instance call ObjectPoolSystem.Tick();, like this:
+- To follow the example above. To get a new instance call ```ObjectPoolSystem.Tick();``` like this:
 
 ```var newInstance = poolSystemOfBloodParticles.GetInstance();```
-This call replaces GameObject.Instantiate(); in your code.
+This call replaces ```GameObject.Instantiate();``` in your code.
 
-- To return manually an instance to the pool call ObjectPoolSystem.ReturnInstance(GameObject instance); like this:
+- To return manually an instance to the pool call ```ObjectPoolSystem.ReturnInstance(GameObject instance);``` like this:
 
 ```poolSystemOfBloodParticles.ReturnInstance(newInstance);```
 This call replaces GameObject.Destroy/DestroyImmediate(); in your code.
 ###### Note: You only need to manually return an instance to the pool if you din't supplied a lifeTime when creating the pool. If you supplied a lifeTime, instances will return automatically to the pool after lifeTime has reached zero. If you are requesting more instances than max instances the system will return the oldest one.
 
-- To handle automatic lifecycle of instances, call every frame ObjectPoolSystem.Tick(); like this:
+- To handle automatic lifecycle of instances, call every frame ```ObjectPoolSystem.Tick();``` like this:
 ```
 void Update()
 {
