@@ -3,7 +3,9 @@ Simple but powerful GameObject pool system that can optionally handle instances 
 
 ## Instructions and API usage
 
-- To initialize the a pool of instances call ```ObjectPoolSystem(GameObject prefab, int minInstances, int maxInstances, float lifeTime = 0f)```
+- To initialize the a pool of instances call:
+```ObjectPoolSystem(GameObject prefab, int minInstances, int maxInstances, float lifeTime = 0f)```
+
 Example:
 
 ```var poolSystemOfBloodParticles = new ObjectPoolSystem(BloodParticlePrefab, minInstances, maxInstances, lifeTime);```
