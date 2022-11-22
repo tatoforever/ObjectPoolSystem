@@ -13,7 +13,7 @@ Example:
 
 The pool is instantiated with a minimum set of instances, if you need more instances than the minimum set, it will resize the pool untill it reach max instances. Once the pool instance reaches max instances it will swap the oldest instance with the new instance when you request a new one. But if you never reach max instances, no new instance is created.
 
-- To follow the example above. To get a new instance call ```ObjectPoolSystem.Tick();``` like this:
+- To follow the example above. To get a new instance call ```ObjectPoolSystem.GetInstance();``` like this:
 
 ```var newInstance = poolSystemOfBloodParticles.GetInstance();```
 This call replaces ```GameObject.Instantiate();``` in your code.
