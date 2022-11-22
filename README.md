@@ -31,8 +31,8 @@ void Update()
   poolSystemOfBloodParticles.Tick();
 }
 ```
-###### Note: You must supply a lifeTime value when creating your pool in order for the system to handle instances lifeTime properly.
 For example you want to instantiate a bunch of objects but you don't want to manually handle its deactivation. This call takes care of their deactivation time using the lifeTime you provided when created the pool.
+###### Note: You must supply a lifeTime value when creating your pool in order for the system to handle instances lifeTime properly.
 
 Once the object managing the pool instance is destroyed, call ```ObjectPoolSystem.Dispose();``` like this:
 
