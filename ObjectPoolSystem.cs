@@ -1,9 +1,26 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace FM.Pool
 {
     public class ObjectPoolSystem
     {
+        private class ObjectPoolData
+        {
+            public GameObject goInstance;
+            public float lifeTime;
+        
+            /// <summary>
+            /// Constructor that takes in a GameObject instance and a lifetime float as parameters
+            /// </summary>
+            /// <param name="goInstance"></param>
+            /// <param name="lifeTime"></param>
+            public ObjectPoolData(GameObject goInstance, float lifeTime)
+            {
+                this.goInstance = goInstance;
+                this.lifeTime = lifeTime;
+            }
+        }
+        
         private int _instanceCount, _maxInstances;
         private bool _randomLife;
         private float _minLifeTime, _maxLifeTime;
@@ -22,7 +39,7 @@ namespace FM.Pool
         }
         
         /// <summary>
-        /// Constructor that takes in a GameObject instance (or prefab) and the number of instances to create with an optional random life time
+        /// Constructor that takes in a GameObject (scene instance or prefab) and the number of instances to create with an optional random life time
         /// </summary>
         /// <param name="prefab"></param>
         /// <param name="minInstances"></param>
@@ -39,11 +56,11 @@ namespace FM.Pool
             _randomLife = randomLife;
             _instanceCount = minInstances;
             _maxInstances = maxInstances;
-            _instances = new ObjectPoolData[_instanceCount];
+            _instances = new ObjectPoolData[maxInstances];
             _minLifeTime = minLifeTime;
             _maxLifeTime = maxLifeTime;
             
-            for (var i = 0; i < minInstances; i++)
+            for (var i = 0; i < _instanceCount; i++)
             {
                 var obj = GameObject.Instantiate(prefab);
                 obj.name = $"{prefab.name} PoolInstance";
@@ -58,7 +75,7 @@ namespace FM.Pool
         /// <returns></returns>
         public GameObject GetInstance()
         {
-            for (var i = 0; i < _instances.Length; i++)
+            for (var i = 0; i < _instanceCount; i++)
             {
                 if (_instances[i].goInstance.activeInHierarchy) continue;
                 
@@ -69,7 +86,7 @@ namespace FM.Pool
             }
             
             //If max instances reached get the oldest one and return it as the new one
-            if (_instances.Length >= _maxInstances)
+            if (_instanceCount >= _maxInstances)
             {
                 var newest = _instances[0];
                 newest.lifeTime = _randomLife ? Random.Range(_minLifeTime, _maxLifeTime) : _maxLifeTime;//reset the life time
@@ -80,12 +97,12 @@ namespace FM.Pool
             
             //If we are allowed to resize, create a new instance and return it
             _instanceCount++;
-            System.Array.Resize(ref _instances, _instanceCount);
+            //System.Array.Resize(ref _instances, _instanceCount);
             var newIns = GameObject.Instantiate(_instances[0].goInstance);
             newIns.name = _instances[0].goInstance.name;
-            _instances[Mathf.Max(0,_instances.Length - 1)] = new ObjectPoolData(newIns, _randomLife ? Random.Range(_minLifeTime, _maxLifeTime) : _maxLifeTime);//add it to the end of the array
+            _instances[Mathf.Max(0,_instanceCount - 1)] = new ObjectPoolData(newIns, _randomLife ? Random.Range(_minLifeTime, _maxLifeTime) : _maxLifeTime);//add it to the end of the array
             newIns.SetActive(false);//this will trigger OnDisable in the attached components
-            newIns.SetActive(true);//this will trigger OnDisable in the attached components
+            newIns.SetActive(true);//this will trigger OnEnable in the attached components
             return newIns;
         }
         
@@ -95,7 +112,7 @@ namespace FM.Pool
         /// <param name="instance"></param>
         public void ReturnInstance(GameObject instance)
         {
-            for (var i = 0; i < _instances.Length; i++)
+            for (var i = 0; i < _instanceCount; i++)
             {
                 if (_instances[i].goInstance != instance) continue;
                 _instances[i].lifeTime = 0f;//reset the life time
@@ -109,17 +126,19 @@ namespace FM.Pool
         /// <param name="instanceIndex"></param>
         public void ReturnInstance(int instanceIndex)
         {
-            if (instanceIndex < 0 || instanceIndex >= _instances.Length) return;
+            if (instanceIndex < 0 || instanceIndex >= _instanceCount) return;
             _instances[instanceIndex].lifeTime = 0f;//reset the life time
             _instances[instanceIndex].goInstance.SetActive(false);
         }
         
-        //Needs to be called every frame in order to handle the life time of the instances
+        /// <summary>
+        /// Call this every frame to update the life time of all instances (if any instance lifetime reaches zero, it will deactivate automatically)
+        /// </summary>
         public void Tick()
         {
             if(_maxLifeTime <= 0f) return;
             
-            for (var i = 0; i < _instances.Length; i++)
+            for (var i = 0; i < _instanceCount; i++)
             {
                 _instances[i].lifeTime -= Time.deltaTime;
                 if (_instances[i].lifeTime <= 0f)
@@ -134,28 +153,11 @@ namespace FM.Pool
         /// </summary>
         public void Dispose()
         {
-            for (var i = 0; i < _instances.Length; i++)
+            for (var i = 0; i < _instanceCount; i++)
             {
                 if (_instances[i].goInstance)
                     GameObject.Destroy(_instances[i].goInstance);
             }
-        }
-    }
-
-    public class ObjectPoolData
-    {
-        public GameObject goInstance;
-        public float lifeTime;
-        
-        /// <summary>
-        /// Constructor that takes in a GameObject instance and a lifetime float as parameters
-        /// </summary>
-        /// <param name="goInstance"></param>
-        /// <param name="lifeTime"></param>
-        public ObjectPoolData(GameObject goInstance, float lifeTime)
-        {
-            this.goInstance = goInstance;
-            this.lifeTime = lifeTime;
         }
     }
 }
