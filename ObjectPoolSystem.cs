@@ -4,7 +4,7 @@ namespace FM.Pool
 {
     public class ObjectPoolSystem
     {
-        private class ObjectPoolData
+        private sealed class ObjectPoolData
         {
             public GameObject goInstance;
             public float lifeTime;
